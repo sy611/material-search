@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "category": "営業資料・ツール",
+    "type": "Webサイト",
+    "title": "SoftBank",
+    "url": "https://www.softbank.jp/",
+    "contact": "aaa@bbb.com",
+    "keyword": [
+      "スマホ",
+      "ケータイ"
+    ],
+    "update": "2020-03-04T15:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "category": "営業資料・ツール",
+    "type": "Webサイト",
+    "title": "au",
+    "url": "https://www.au.com/",
+    "contact": "xxx@yyy.zzz",
+    "keyword": [
+      "スマホ"
+    ],
+    "update": "2020-02-20T15:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "category": "トレーニング",
+    "type": "動画",
+    "title": "東京大学",
+    "url": "https://www.u-tokyo.ac.jp/ja/index.html",
+    "contact": "",
+    "keyword": [
+      "東大",
+      "University"
+    ],
+    "update": "2020-03-18T15:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "category": "トレーニング",
+    "type": "動画",
+    "title": "京都大学",
+    "url": "http://www.kyoto-u.ac.jp/ja",
+    "contact": "",
+    "keyword": [
+      "京大",
+      "University"
+    ],
+    "update": "2020-03-18T15:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "category": "契約書・NDA",
+    "type": "動画",
+    "title": "Amazon",
+    "url": "https://www.amazon.co.jp/",
+    "contact": "連絡先1\n連絡先2\n",
+    "keyword": [
+      "keyword1",
+      "keyword2"
+    ],
+    "update": "2020-03-25T15:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "category": "契約書・NDA",
+    "type": "動画",
+    "title": "Google",
+    "url": "https://www.google.co.jp/",
+    "contact": "連絡先1 その2\n連絡先2 その2",
+    "keyword": [
+      "keyword3",
+      "keyword4"
+    ],
+    "update": "2020-03-04T15:00:00.000Z"
+  }
+]

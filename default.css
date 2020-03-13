@@ -1,0 +1,23 @@
+body * {
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.v-expansion-panel-header .v-banner__wrapper,
+.v-expansion-panel-content .v-banner__wrapper {
+  border-bottom: none !important;
+}
+.v-expansion-panel-content__wrap {
+  padding-bottom: 5px !important;
+}
+.v-expansion-panel-content .v-footer {
+  padding-right: 0px !important;
+}
+
+.result {
+  background-color: #f4f4f4;
+}
