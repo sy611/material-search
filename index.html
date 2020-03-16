@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <title>Material Search</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
@@ -15,7 +16,7 @@
     <v-app v-cloak>
       <v-app-bar fixed color="primary" dark>
         <v-app-bar-nav-icon @click="drawer.show = true"></v-app-bar-nav-icon>
-        <v-toolbar-title>Helpdesk FAQ</v-toolbar-title>
+        <v-toolbar-title>Material Search</v-toolbar-title>
       </v-app-bar>
       <!-- <v-navigation-drawer v-model="drawer.show" absolute temporary>
         <v-list nav dense>
@@ -111,7 +112,7 @@
                     <!-- <v-spacer></v-spacer> -->
                     <v-col cols="2" sm="1">
                       <div class="text-right">
-                        <v-btn icon @click="changeShowStatus(x)" class="mr-0">
+                        <v-btn icon @click="changeShowStatus(x)" class="mr-0 pr-0">
                           <v-icon small>{{ show[x] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                         </v-btn>
                       </div>
