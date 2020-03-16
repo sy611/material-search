@@ -102,17 +102,19 @@
                 <v-card-actions class="py-0">
                   <!-- <v-btn text>Share</v-btn> -->
                     
-                    <v-col class="px-3 py-0" cols="11">
+                    <v-col class="px-3 py-0" cols="10" sm="11">
                       <a href="//www.tokyodisneyresort.jp" target="_blank">
                         <p class="subtitle-1 font-weight-bold ma-0 pa-0">filename_00{{ x }}.pdf</p>
                       </a>
                     </v-col>
                   
                     <!-- <v-spacer></v-spacer> -->
-                    <v-col cols="1">
-                      <v-btn icon @click="changeShowStatus(x)" class="mx-auto">
-                        <v-icon small>{{ show[x] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                      </v-btn>
+                    <v-col cols="2" sm="1">
+                      <div class="text-right">
+                        <v-btn icon @click="changeShowStatus(x)" class="mr-0">
+                          <v-icon small>{{ show[x] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                        </v-btn>
+                      </div>
                     </v-col>
                 </v-card-actions>
                 
