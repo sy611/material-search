@@ -21,3 +21,12 @@ body * {
 .result {
   background-color: #f4f4f4;
 }
+
+.categories .v-chip--select {
+  background-color: #FFB32F !important;
+  color: #fff !important;
+}
+.types .v-chip--select {
+  background-color: #FFEB3B !important;
+  color: #000 !important;
+}

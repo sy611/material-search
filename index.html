@@ -18,26 +18,6 @@
         <v-app-bar-nav-icon @click="drawer.show = true"></v-app-bar-nav-icon>
         <v-toolbar-title>Material Search</v-toolbar-title>
       </v-app-bar>
-      <!-- <v-navigation-drawer v-model="drawer.show" absolute temporary>
-        <v-list nav dense>
-          <v-list-item-group v-model="drawer.selected" active-class="primary--text text--accent-4">
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-magnify</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Search</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-comment-question-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Contact</v-list-item-title>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-navigation-drawer> -->
-      <v-content>
-
       <v-content>
         <!-- <div class="main-area overflow-hidden"> -->
         <v-container style="height: 64px;" id="top-margin"></v-container>
@@ -49,15 +29,37 @@
                   <v-text-field label="検索キーワード" v-model="input.word"></v-text-field>
                   <v-select 
                     v-model="input.selectedCategories"
-                    :items="categories"
+                    :items="options.categories"
                     label="カテゴリを選択してください(必須)"
                     multiple 
                     chips
+                    class="categories"
                   >
                     <template v-slot:prepend-item>
-                      <v-list-item ripple @click="toggle">
+                      <v-list-item ripple @click="toggleCategory">
                         <v-list-item-action>
-                          <v-icon>{{ icon }}</v-icon>
+                          <v-icon>{{ iconCategory }}</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Select All</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider class="mt-2"></v-divider>
+                    </template>
+                  </v-select>
+
+                  <v-select 
+                    v-model="input.selectedTypes"
+                    :items="options.types"
+                    label="形式を選択してください(必須)"
+                    multiple 
+                    chips
+                    class="types"
+                  >
+                    <template v-slot:prepend-item>
+                      <v-list-item ripple @click="toggleType">
+                        <v-list-item-action>
+                          <v-icon>{{ iconType }}</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
                           <v-list-item-title>Select All</v-list-item-title>
@@ -71,7 +73,7 @@
                     color="primary" 
                     block 
                     @click="searchRecords"
-                    :disabled="input.selectedCategories.length === 0"
+                    :disabled="input.selectedCategories.length === 0 || input.selectedTypes.length === 0"
                   >
                     <span>検索</span>
                   </v-btn>
@@ -82,107 +84,59 @@
         </v-container>
       </v-content>
 
-      <!-- <v-content class="result" v-if="countAllRecords && showResultArea"> -->
-      <v-content class="result">
+      <v-content class="result" v-if="countAllRecords && showResultArea">
+      <!-- <v-content class="result"> -->
         <v-container>
           <v-row>
             <v-col>
-              <!-- <span>{{ show }}</span> -->
               <div class="headline pb-4">検索結果 {{ filteredRecords.length }}件</div>
-              <v-card class="mx-auto mb-1" v-for="x in [0, 1, 2]" :key="x">
+              <v-card class="mx-auto my-2" v-for="(r, index) in filteredRecords">
                 <div class="pt-2 px-2">
-                  <v-chip class="mb-2 mr-1" label small color="primary">カテゴリ1</v-chip>
-                  <v-chip class="mb-2 mr-1" label small color="yellow">PDF</v-chip>
+                  <v-chip class="mb-0 mr-1" small color="primary lighten-1">{{ r.category }}</v-chip>
+                  <v-chip class="mb-0 mr-1" small color="yellow">{{ r.type }}</v-chip>
                 </div>
-                <!-- <div class="px-3">
-                  <a href="//www.tokyodisneyresort.jp" target="_blank">
-                    <span class="subtitle-1 font-weight-bold">File_name_xxyyzz_ver2.2.pdf</span>
-                  </a> 
-                </div> -->
                 
                 <v-card-actions class="py-0">
-                  <!-- <v-btn text>Share</v-btn> -->
-                    
                     <v-col class="px-3 py-0" cols="10" sm="11">
-                      <a href="//www.tokyodisneyresort.jp" target="_blank">
-                        <p class="subtitle-1 font-weight-bold ma-0 pa-0">filename_00{{ x }}.pdf</p>
+                      <a :href="r.url" target="_blank">
+                        <p class="subtitle-1 font-weight-bold ma-0 pa-0">{{ r.title }}</p>
                       </a>
                     </v-col>
                   
-                    <!-- <v-spacer></v-spacer> -->
                     <v-col cols="2" sm="1">
                       <div class="text-right">
-                        <v-btn icon @click="changeShowStatus(x)" class="mr-0 pr-0">
-                          <v-icon small>{{ show[x] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                        <v-btn icon @click="changeShowStatus(index)" class="mr-0 pr-0">
+                          <v-icon small>{{ show[index] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                         </v-btn>
                       </div>
                     </v-col>
                 </v-card-actions>
                 
                 <v-expand-transition>
-                  <div v-show="show[x]">
+                  <div v-show="show[index]">
                     <v-divider></v-divider>
                     
                     <div class="pt-2 px-2">
-                      <v-chip class="mb-2 mr-1" label small v-for="i in (x * 2 + 2)">example {{ i }}</v-chip>
-                      <p class=" mt-2 mb-1">
-                        <v-icon>mdi-information-outline</v-icon> 問合せ先
-                      </p>
-                      <p class="ml-4 grey--text text--en-2">xxx@yyy.zzz</p> 
+                      <v-chip class="mb-2 mr-1" label small v-for="w in r.keyword">{{ w }}</v-chip>
+                      <div v-if="r.contact">
+                        <p class=" mt-2 mb-1">
+                          <v-icon>mdi-information-outline</v-icon> 問合せ先
+                        </p>
+                        <p class="ml-4 grey--text text--en-2">{{ r.contact }}</p> 
+                      </div>
                       <v-footer color="white" class="text-right px-0">
-                        <v-col class="text-right grey--text caption my-0 pr-1 py-0" cols="12">最終更新 2020/3/12</v-col>
+                        <v-col class="text-right grey--text caption my-0 pr-1 py-0" cols="12">最終更新 {{ new Date(r.update).toLocaleDateString('ja-JP') }}</v-col>
                       </v-footer>
                     </div>
                   </div>
                 </v-expand-transition>
               </v-card>
-              <v-expansion-panels v-model="panel" multiple popout>
-                <v-expansion-panel v-for="r in filteredRecords">
-                  <v-expansion-panel-header class="">
-                    <v-banner two-line>
-                      <v-avatar slot="icon" size="40" color="grey lighten-2s">
-                        <v-icon icon="mdi-help" color="white">
-                          mdi-help
-                        </v-icon>
-                      </v-avatar>
-                      <v-chip class="mb-2 mr-1" label small color="primary">{{ r.category }}</v-chip>
-                      <v-chip class="mb-2 mr-1" label small v-for="v in r.keyword">{{ v }}</v-chip>
-                      <p class="mb-0">{{ r.title }}</p>
-                    </v-banner>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content color="">
-                    <v-divider></v-divider>
-                    <v-banner two-line color="">
-                      <v-avatar slot="icon" size="40" color="yellow darken-1">
-                        <v-icon icon="mdi-lightbulb" color="white">
-                          mdi-lightbulb
-                        </v-icon>
-                      </v-avatar>
-                      <p class="mb-0">{{ r.url }}</p>
-                    </v-banner>
-                    <v-divider v-if="r.contact"></v-divider>
-                    <v-banner two-line v-if="r.contact">
-                      <v-avatar slot="icon" size="40" color="green darken-1">
-                        <v-icon icon="mdi-information-variant" color="white">
-                          mdi-information-variant
-                        </v-icon>
-                      </v-avatar>
-                      <div class="mb-0 body-2">
-                        <p class="mb-1">この質問に関する問い合わせ先</p>
-                        <p class="mb-0 ml-3 ">{{ r.contact }}</p>
-                      </div>
-                    </v-banner>
-                    <v-footer color="white" class="text-right">
-                      <v-col class="text-right grey--text caption py-0 my-0" cols="12">最終更新 {{ new Date(r.update).toLocaleDateString('ja-JP') }}</v-col>
-                    </v-footer>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
+              
             </v-col>
           </v-row>
         </v-container>
       </v-content>
-      <!--
+      
       <v-overlay class="text-center" color="white" opacity="1" :value="!countAllRecords">
         <v-progress-circular 
           color="primary"
@@ -192,7 +146,7 @@
         >
         </v-progress-circular>
       </v-overlay>
-      -->
+     
     </v-app>
   </div>
   <!-- dev dependencies -->

@@ -3,10 +3,6 @@ const vuetify = new Vuetify({
     themes: {
       light: {
         primary: '#FF9800',
-        // brand: '#03A9F4',
-        unanswered: '#999999',
-        correct: '#0288d1',
-        wrong: '#e57373'
       }
     }
   }
@@ -48,29 +44,46 @@ const app = new Vue({
     countAllRecords() {
       return this.$store.state.records.length
     },
-    categories() {
-      const arr = !!this.countAllRecords
-        ? this.$store.state.records.map(r => r.category)
-        : []
-      return [... new Set(arr)]
-    },
+    options() {
+      const categories = [... new Set(this.$store.state.records.map(r => r.category))]
+      const types = [... new Set(this.$store.state.records.map(r => r.type))]
 
+      this.input.selectedCategories = categories.slice()
+      this.input.selectedTypes = types.slice()
+
+      return {
+        categories,
+        types
+      }
+    },
     selectsAllCategory() {
-      return this.input.selectedCategories.length === this.categories.length
+      return this.input.selectedCategories.length === this.options.categories.length
     },
     selectsSomeCategory() {
       return this.input.selectedCategories.length > 0 && !this.selectsAllCategory
     },
-    icon() {
+    iconCategory() {
       if (this.selectsAllCategory) return 'mdi-close-box'
       if (this.selectsSomeCategory) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
+    
+    selectsAllType() {
+      return this.input.selectedTypes.length === this.options.types.length
+      
+    },
+    selectsSomeType() {
+      return this.input.selectedTypes.length > 0 && !this.selectsAllType
+    },
+    iconType() {
+      if (this.selectsAllType) return 'mdi-close-box'
+      if (this.selectsSomeType) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     }
   },
   methods: {
-    changeShowStatus(x) {
-      console.log(x)
-      this.show.splice(x, 1, !this.show[x])
+    changeShowStatus(i) {
+      this.show.splice(i, 1, !this.show[i])
     },
     getRecordsByButton() {
       this.$store.dispatch('getRecords')
@@ -80,20 +93,20 @@ const app = new Vue({
         this.errorCategory = true
         return
       }
-
       this.showResultArea = true
       const filtered = this.$store.state.records.filter(r => {
-        /* カテゴリによるフィルタリング */
-        // r.categoryがinput.selectedCategoriesに入ってるかどうかをチェック
-        // (入ってなければその時点でfalseを返す)
-        if(!this.input.selectedCategories.includes(r.category)) {
+        /* ① カテゴリ・タイプによるフィルタリング */
+        // r.categoryがinput.selectedCategoriesに入っているかどうか、
+        // r.typeがinput.selectedTypesに入っているかどうか、をチェック
+        // (どちらか一方でも入ってなければその時点でfalseを返す)
+        if (!this.input.selectedCategories.includes(r.category) || !this.input.selectedTypes.includes(r.type)) {
           return false
         }
 
-        /* 入力したキーワードによるフィルタリング */
+        /* ② 入力したキーワードによるフィルタリング */
         // (マッチングが見つかった時点でtrueを返す、最後まで見つからなければfalse)
         const flag = this.arrWordSplit.every(word => {
-          // 質問に指定された検索キーワードとのマッチングを判定する
+          // レコードに指定された検索キーワードとのマッチングを判定する
           // r.keywordにinput.wordが入ってるかどうかをチェック
           const keywordLower = r.keyword.map(v => v.toLowerCase())
 
@@ -101,57 +114,57 @@ const app = new Vue({
             return true
           } 
 
-          // 質問文とのマッチングを判定する
+          // タイトルとのマッチングを判定する
           // r.titleにinput.wordが入ってるかどうかをチェック
           const titleLower = r.title.toLowerCase()
           if(titleLower.includes(word)) {
             return true
           }
 
-          // // 回答文とのマッチングを判定する
-          // // r.answerにinput.wordが入ってるかどうかをチェック
-          // const answerLower = r.answer.toLowerCase()
-          // if(answerLower.includes(word)) {
-          //   return true
-          // }
-
-          // どこにもマッチしなかった = falseを返す
+          // どこにもマッチしなかった => falseを返す
           return false
         })
         return flag
       })
       this.filteredRecords = filtered
+      // this.show = filtered.map(() => false)
     },
-    toggle() {
+    toggleCategory() {
       this.$nextTick(() => {
         if (this.selectsAllCategory) {
           this.input.selectedCategories = []
         } else {
-          this.input.selectedCategories = this.categories.slice()
+          this.input.selectedCategories = this.options.categories.slice()
+        }
+      })
+    },
+    toggleType() {
+      this.$nextTick(() => {
+        if (this.selectsAllType) {
+          this.input.selectedTypes = []
+        } else {
+          this.input.selectedTypes = this.options.types.slice()
         }
       })
     }
   },
   data() {
     return {
-      drawer: {
-        show: false,
-        selected: ''
-      },
       input: {
         word: '',
         selectedCategories: [],
+        selectedTypes: []
       },
       showResultArea: false,
       filteredRecords: [],
-      panel: [],
-      overlay: true,
 
-
-      show: [false, false, false]
+      show: []
     }
   },
   mounted() {
     this.$store.dispatch('getRecords')
   }
 })
+
+
+
